@@ -67,6 +67,15 @@ public class CodeReviewExTest {
         check("dayOfYear(13, 5, 2025) throws", true, throwsIllegalArgument(() -> CodeReviewEx.dayOfYear(13, 5, 2025)));
         check("dayOfYear(2, 29, 2025) throws", true, throwsIllegalArgument(() -> CodeReviewEx.dayOfYear(2, 29, 2025)));
 
+        // KAN-15: results are returned, not printed or stored in globals
+        List<String> words = List.of("code", "review", "is", "useful", "documentation");
+        check("countLongWords", 3, CodeReviewEx.countLongWords(words));
+        check("countLongWords(empty)", 0, CodeReviewEx.countLongWords(List.of()));
+        check("countLongWords(exactly 5 letters)", 0, CodeReviewEx.countLongWords(List.of("hello")));
+        check("longestWord", "documentation", CodeReviewEx.longestWord(words));
+        check("longestWord(tie keeps first)", "review", CodeReviewEx.longestWord(List.of("review", "useful")));
+        check("longestWord(empty)", "", CodeReviewEx.longestWord(List.of()));
+
         System.out.println(passed + " passed, " + failures.size() + " failed");
         failures.forEach(f -> System.out.println("FAIL " + f));
         if (!failures.isEmpty()) System.exit(1);
