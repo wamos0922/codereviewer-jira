@@ -38,17 +38,27 @@ public class CodeReviewEx {
         return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
     }
     /* Q13 ~ Q18 (countLongWords) */
-    public static int LONG_WORD_LENGTH = 5;
-    public static String longestWord;
+    private static final int LONG_WORD_LENGTH = 5;
 
-    public static void countLongWords(List<String> words) {
-        int n = 0;
-        longestWord = "";
-        for (String word: words) {
-            if (word.length() > LONG_WORD_LENGTH) ++n;
-            if (word.length() > longestWord.length()) longestWord = word;
+    /** Returns how many words are longer than {@value #LONG_WORD_LENGTH} characters. */
+    public static int countLongWords(final List<String> words) {
+        int count = 0;
+        for (String word : words) {
+            if (word.length() > LONG_WORD_LENGTH) {
+                count++;
+            }
         }
-        System.out.println(n);
+        return count;
     }
 
+    /** Returns the first longest word, or "" for an empty list. */
+    public static String longestWord(final List<String> words) {
+        String longest = "";
+        for (String word : words) {
+            if (word.length() > longest.length()) {
+                longest = word;
+            }
+        }
+        return longest;
+    }
 }
