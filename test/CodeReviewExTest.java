@@ -21,6 +21,21 @@ public class CodeReviewExTest {
     public static void main(String[] args) {
         // Tests are added by the fix PRs below this line.
 
+        // KAN-9: tens digit 5 was compared with the int 5, not the char '5'
+        check("leap(1952)", true, CodeReviewEx.leap(1952));
+        check("leap(1956)", true, CodeReviewEx.leap(1956));
+        check("leap(1958)", false, CodeReviewEx.leap(1958));
+        // KAN-10: centuries divisible by 400 are leap years
+        check("leap(2000)", true, CodeReviewEx.leap(2000));
+        check("leap(1900)", false, CodeReviewEx.leap(1900));
+        check("leap(2100)", false, CodeReviewEx.leap(2100));
+        // KAN-11: years with fewer than 4 digits used to throw
+        check("leap(800)", true, CodeReviewEx.leap(800));
+        check("leap(99)", false, CodeReviewEx.leap(99));
+        // ordinary years
+        check("leap(2024)", true, CodeReviewEx.leap(2024));
+        check("leap(2023)", false, CodeReviewEx.leap(2023));
+
         System.out.println(passed + " passed, " + failures.size() + " failed");
         failures.forEach(f -> System.out.println("FAIL " + f));
         if (!failures.isEmpty()) System.exit(1);
