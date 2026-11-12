@@ -5,31 +5,29 @@ public class CodeReviewEx {
         System.out.println("This will be printed");
     }
     /* Q1 ~ Q8 (dayOfYear) */
-    public static int dayOfYear(int month, int dayOfMonth, int year) {
-        if (month == 2) {
-            dayOfMonth += 31;
-        } else if (month == 3) {
-            dayOfMonth += 59;
-        } else if (month == 4) {
-            dayOfMonth += 90;
-        } else if (month == 5) {
-            dayOfMonth += 31 + 28 + 31 + 30;
-        } else if (month == 6) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31;
-        } else if (month == 7) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30;
-        } else if (month == 8) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31;
-        } else if (month == 9) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 30;
-        } else if (month == 10) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 30 + 30;
-        } else if (month == 11) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 30 + 30 + 31;
-        } else if (month == 12) {
-            dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 30 + 30 + 31 + 31;
+    private static final int[] DAYS_IN_MONTH = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    /**
+     * Returns the day of the year (1-366) for the given date.
+     *
+     * @throws IllegalArgumentException if month or dayOfMonth is out of range
+     */
+    public static int dayOfYear(final int month, final int dayOfMonth, final int year) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("month must be 1-12, was " + month);
         }
-        return dayOfMonth;
+        int monthLength = DAYS_IN_MONTH[month - 1] + (month == 2 && leap(year) ? 1 : 0);
+        if (dayOfMonth < 1 || dayOfMonth > monthLength) {
+            throw new IllegalArgumentException("day must be 1-" + monthLength + ", was " + dayOfMonth);
+        }
+        int day = dayOfMonth;
+        for (int m = 0; m < month - 1; m++) {
+            day += DAYS_IN_MONTH[m];
+        }
+        if (month > 2 && leap(year)) {
+            day++;
+        }
+        return day;
     }
     /* Q9 ~ Q12 (leap) */
     /**

@@ -18,6 +18,15 @@ public class CodeReviewExTest {
         }
     }
 
+    static boolean throwsIllegalArgument(Runnable r) {
+        try {
+            r.run();
+            return false;
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
+    }
+
     public static void main(String[] args) {
         // Tests are added by the fix PRs below this line.
 
@@ -35,6 +44,28 @@ public class CodeReviewExTest {
         // ordinary years
         check("leap(2024)", true, CodeReviewEx.leap(2024));
         check("leap(2023)", false, CodeReviewEx.leap(2023));
+
+        // KAN-7: Sep-Nov were one day short (August counted as 30)
+        check("dayOfYear(9, 1, 2025)", 244, CodeReviewEx.dayOfYear(9, 1, 2025));
+        check("dayOfYear(10, 1, 2025)", 274, CodeReviewEx.dayOfYear(10, 1, 2025));
+        check("dayOfYear(11, 1, 2025)", 305, CodeReviewEx.dayOfYear(11, 1, 2025));
+        check("dayOfYear(12, 31, 2025)", 365, CodeReviewEx.dayOfYear(12, 31, 2025));
+        // KAN-8: leap years add a day from March on
+        check("dayOfYear(2, 29, 2024)", 60, CodeReviewEx.dayOfYear(2, 29, 2024));
+        check("dayOfYear(3, 1, 2024)", 61, CodeReviewEx.dayOfYear(3, 1, 2024));
+        check("dayOfYear(12, 31, 2024)", 366, CodeReviewEx.dayOfYear(12, 31, 2024));
+        // every day of two years against java.time
+        for (int year : new int[] {2023, 2024}) {
+            java.time.LocalDate d = java.time.LocalDate.of(year, 1, 1);
+            while (d.getYear() == year) {
+                check("dayOfYear " + d, d.getDayOfYear(),
+                      CodeReviewEx.dayOfYear(d.getMonthValue(), d.getDayOfMonth(), year));
+                d = d.plusDays(1);
+            }
+        }
+        // KAN-13: invalid input fails fast instead of returning a wrong number
+        check("dayOfYear(13, 5, 2025) throws", true, throwsIllegalArgument(() -> CodeReviewEx.dayOfYear(13, 5, 2025)));
+        check("dayOfYear(2, 29, 2025) throws", true, throwsIllegalArgument(() -> CodeReviewEx.dayOfYear(2, 29, 2025)));
 
         System.out.println(passed + " passed, " + failures.size() + " failed");
         failures.forEach(f -> System.out.println("FAIL " + f));
