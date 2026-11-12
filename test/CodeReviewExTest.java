@@ -29,6 +29,9 @@ public class CodeReviewExTest {
         check("leap(2000)", true, CodeReviewEx.leap(2000));
         check("leap(1900)", false, CodeReviewEx.leap(1900));
         check("leap(2100)", false, CodeReviewEx.leap(2100));
+        // KAN-11: years with fewer than 4 digits used to throw
+        check("leap(800)", true, CodeReviewEx.leap(800));
+        check("leap(99)", false, CodeReviewEx.leap(99));
         // ordinary years
         check("leap(2024)", true, CodeReviewEx.leap(2024));
         check("leap(2023)", false, CodeReviewEx.leap(2023));
